@@ -23,7 +23,19 @@
     <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="scss/style.css" rel="stylesheet">
+    <head>
+        <style>
+            @media (max-width: 768px) {
+                .timeline img {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+
+    
+    
 </head>
 
 <body data-spy="scroll" data-target=".navbar" data-offset="51">
@@ -73,8 +85,26 @@
                     </div>
                     <!-- Cuenta atrás -->
                     <div class="d-flex flex-column align-items-center justify-content-center mt-5">
-                        <h3 class="text-white mb-3">Faltan:</h3>
-                        <div id="timer-1" class="text-white font-weight-bold" style="font-size: 2rem; background-color: rgba(0, 0, 0, 0.5); padding: 15px 30px; border-radius: 5px;"></div>
+                        <div class="countdown-container" style="background-color: rgba(0, 0, 0, 0.6); border-radius: 8px; padding: 20px 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                            <div class="countdown-units" style="display: flex; justify-content: center; gap: 25px;">
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="days-1" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Días</div>
+                                </div>
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="hours-1" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Horas</div>
+                                </div>
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="minutes-1" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Min</div>
+                                </div>
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="seconds-1" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Seg</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,8 +121,26 @@
                     </div>
                     <!-- Cuenta atrás -->
                     <div class="d-flex flex-column align-items-center justify-content-center mt-5">
-                        <h3 class="text-white mb-3">Faltan:</h3>
-                        <div id="timer-2" class="text-white font-weight-bold" style="font-size: 2rem; background-color: rgba(0, 0, 0, 0.5); padding: 15px 30px; border-radius: 5px;"></div>
+                        <div class="countdown-container" style="background-color: rgba(0, 0, 0, 0.6); border-radius: 8px; padding: 20px 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                            <div class="countdown-units" style="display: flex; justify-content: center; gap: 25px;">
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="days-2" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Días</div>
+                                </div>
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="hours-2" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Horas</div>
+                                </div>
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="minutes-2" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Min</div>
+                                </div>
+                                <div class="countdown-unit" style="text-align: center;">
+                                    <div id="seconds-2" class="countdown-value text-white" style="font-size: 2.5rem; font-weight: 300; font-family: 'Times New Roman', serif;">00</div>
+                                    <div class="countdown-label text-primary" style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Seg</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,97 +175,89 @@
         const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-        // Muestra la cuenta atrás en ambas imágenes
-        document.getElementById("timer-1").innerHTML = `${days}d ${hours}h ${minutes}m`;
-        document.getElementById("timer-2").innerHTML = `${days}d ${hours}h ${minutes}m `;
+        // Formatea los números para que siempre tengan dos dígitos
+        const formatNumber = (num) => num.toString().padStart(2, '0');
+
+        // Actualiza ambos timers
+        // Timer 1
+        document.getElementById("days-1").innerHTML = formatNumber(days);
+        document.getElementById("hours-1").innerHTML = formatNumber(hours);
+        document.getElementById("minutes-1").innerHTML = formatNumber(minutes);
+        document.getElementById("seconds-1").innerHTML = formatNumber(seconds);
+        
+        // Timer 2
+        document.getElementById("days-2").innerHTML = formatNumber(days);
+        document.getElementById("hours-2").innerHTML = formatNumber(hours);
+        document.getElementById("minutes-2").innerHTML = formatNumber(minutes);
+        document.getElementById("seconds-2").innerHTML = formatNumber(seconds);
 
         // Si la cuenta atrás ha terminado
         if (timeLeft < 0) {
             clearInterval(countdownInterval);
-            document.getElementById("timer-1").innerHTML = "¡Es el gran día!";
-            document.getElementById("timer-2").innerHTML = "¡Es el gran día!";
+            
+            // Cambiar el estilo de los contenedores para mostrar el mensaje final
+            const countdownContainers = document.querySelectorAll(".countdown-container");
+            countdownContainers.forEach(container => {
+                container.innerHTML = '<div class="text-white text-center" style="font-size: 2rem; font-family: \'Times New Roman\', serif;">¡Es el gran día!</div>';
+            });
         }
     }, 1000);
 </script>
 
-    
     <!-- Carousel End -->
 
-
-    <!-- Video Modal Start -->
-     <!--
-    <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>        
-                     16:9 aspect ratio 
-                    <div class="embed-responsive embed-responsive-16by9">
-                        <iframe class="embed-responsive-item" src="" id="video"  allowscriptaccess="always" allow="autoplay"></iframe>
-                    </div>
+<!-- Sección para redireccionar al formulario RSVP -->
+<div class="container-fluid py-5" id="form-redirect">
+    <div class="container py-5">
+        <div class="section-title position-relative text-center">
+            <h6 class="text-uppercase text-primary mb-3" style="letter-spacing: 3px;">Confirmación</h6>
+            <h1 class="font-secondary display-4">Confirma tu Asistencia</h1>
+            <i class="far fa-heart text-dark"></i>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <p class="mb-4">Nos encantaría contar con tu presencia en nuestro día especial. Por favor, completa el formulario para confirmar tu asistencia, preferencias de menú y cualquier información adicional que necesitemos saber.</p>
+                
+                <div class="countdown-container mb-4" style="background-color: rgba(0, 0, 0, 0.05); border-radius: 8px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                    <p class="text-primary mb-2" style="font-weight: 500;">Fecha límite para confirmar:</p>
+                    <h4>27 de Agosto de 2025</h4>
                 </div>
+                
+                <a href="#rsvp" class="btn btn-primary font-weight-bold py-3 px-5">Rellenar Formulario</a>
+            </div>
+        </div>
+        
+        <!-- Información adicional -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-4 text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; background-color: #f8f9fa; border-radius: 50%;">
+                    <i class="fa fa-utensils text-primary" style="font-size: 30px;"></i>
+                </div>
+                <h5 class="font-weight-normal">Opciones de Menú</h5>
+                <p class="text-muted">Indícanos tus preferencias alimentarias o alergias en el formulario</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; background-color: #f8f9fa; border-radius: 50%;">
+                    <i class="fa fa-child text-primary" style="font-size: 30px;"></i>
+                </div>
+                <h5 class="font-weight-normal">Niños</h5>
+                <p class="text-muted">Por favor, indícanos si vendrás con niños</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px; background-color: #f8f9fa; border-radius: 50%;">
+                    <i class="fa fa-car text-primary" style="font-size: 30px;"></i>
+                </div>
+                <h5 class="font-weight-normal">Transporte</h5>
+                <p class="text-muted">Información sobre opciones de transporte disponibles</p>
             </div>
         </div>
     </div>
-    -->
-    <!-- Video Modal End -->
+</div>
+    
 
-
-    <!-- About Start -->
-     <!--
-    <div class="container-fluid py-5" id="about">
-        <div class="container py-5">
-            <div class="section-title position-relative text-center">
-                <h6 class="text-uppercase text-primary mb-3" style="letter-spacing: 3px;">About</h6>
-                <h1 class="font-secondary display-4">Groom & Bride</h1>
-                <i class="far fa-heart text-dark"></i>
-            </div>
-            <div class="row m-0 mb-4 mb-md-0 pb-2 pb-md-0">
-                <div class="col-md-6 p-0 text-center text-md-right">
-                    <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-5">
-                        <h3 class="mb-3">The Groom</h3>
-                        <p>Lorem elitr magna stet rebum dolores sed. Est stet labore est lorem lorem at amet sea, eos tempor rebum, labore amet ipsum sea lorem, stet rebum eirmod amet. Kasd clita kasd stet amet est dolor elitr.</p>
-                        <h3 class="font-secondary font-weight-normal text-muted mb-3"><i class="fa fa-male text-primary pr-3"></i>Lorena</h3>
-                        <div class="position-relative">
-                            <a class="btn btn-outline-primary btn-square mr-1" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-primary btn-square mr-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-primary btn-square mr-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 p-0" style="min-height: 400px;">
-                    <img class="position-absolute w-100 h-100" src="img/about-1.jpg" style="object-fit: cover;">
-                </div>
-            </div>
-            <div class="row m-0">
-                <div class="col-md-6 p-0" style="min-height: 400px;">
-                    <img class="position-absolute w-100 h-100" src="img/about-2.jpg" style="object-fit: cover;">
-                </div>
-                <div class="col-md-6 p-0 text-center text-md-left">
-                    <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-5">
-                        <h3 class="mb-3">The Bride</h3>
-                        <p>Lorem elitr magna stet rebum dolores sed. Est stet labore est lorem lorem at amet sea, eos tempor rebum, labore amet ipsum sea lorem, stet rebum eirmod amet. Kasd clita kasd stet amet est dolor elitr.</p>
-                        <h3 class="font-secondary font-weight-normal text-muted mb-3"><i class="fa fa-female text-primary pr-3"></i>Yosu</h3>
-                        <div class="position-relative">
-                            <a class="btn btn-outline-primary btn-square mr-1" href="#"><i class="fab fa-instagram"></i></a>
-                            <a class="btn btn-outline-primary btn-square mr-1" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-primary btn-square mr-1" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
-    <!-- About End -->
-
-
-    <!-- Story Start -->
+    <!-- Horario Start -->
     <div class="container-fluid py-5" id="story">
         <div class="container pt-5 pb-3">
             <div class="section-title position-relative text-center">
@@ -233,16 +273,23 @@
                     <div class="col-md-6 text-center text-md-left">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 ml-md-3">
                             <h4 class="mb-2">Ceremonia</h4>
-                            <p class="text-uppercase mb-2">12:00 horas</p>
-                            <p class="m-0">En la Iglesia Parroquial de San Pedro Apóstol, en Rojales.</p>
+                            <p class="text-uppercase mb-2">12:00 AM</p>
+                            <p class="m-0">
+                                En la Iglesia Parroquial de San Pedro Apóstol, en Rojales.
+                            </p>
+                            <a href="https://www.google.com/maps?sca_esv=c658d6c430e1c367&sxsrf=AHTn8zoCqwG9MAi6mhWvBXJy5rk8d96kHQ:1743356049493&fbs=ABzOT_BnMAgCWdhr5zilP5f1cnRvL69nV-ns4EEhuHi7aGOP-3vvyrhQpwNuPmWYea_clDmI_2RHewrlBZaZGvP4ZMQO_ykf8EvvX3dx_w3k-NvaO9aNqilN_wVYqhk7BdFNDUvYseYjm1ppU967TaY-4uoqfwBgNaoAqBHciFAiCGk8hGvK6uRDJOpwGydHafN4YwBxE6TPW4kzQxY5gGPIi3ZphTlXZg&biw=1920&bih=911&dpr=1&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=KbuYuEMar2MNMdRmLmVT9aDI&daddr=Pl.+de+la+Iglesia,+0,+03170+Rojales,+Alicante" target="_blank">
+                                <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                            </a>
+
                         </div>
                     </div>
+                    
                 </div>
                 <div class="row">
                     <div class="col-md-6 text-center text-md-right">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 mr-md-3">
                             <h4 class="mb-2">Salida del Bus</h4>
-                            <p class="text-uppercase mb-2">13:30 horas</p>
+                            <p class="text-uppercase mb-2">13:30 PM</p>
                             <p class="m-0">El autobús saldrá desde la dirección XXXX. Reserva tu plaza a través del formulario.</p>
                         </div>
                     </div>
@@ -257,8 +304,11 @@
                     <div class="col-md-6 text-center text-md-left">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 ml-md-3">
                             <h4 class="mb-2">Cóctel y Comida</h4>
-                            <p class="text-uppercase mb-2">15:00 horas</p>
+                            <p class="text-uppercase mb-2">15:00 PM</p>
                             <p class="m-0">El banquete será en El  portón de la Condesa, La Alcayna, Murcia.</p>
+                            <a href="https://www.google.com/maps?sca_esv=c658d6c430e1c367&biw=1920&bih=911&sxsrf=AHTn8zqjIz4rU4Ncw-UP2ytrcL9indlT9w:1743356411679&gs_lp=Egxnd3Mtd2l6LXNlcnAiDXBvcnRvbiBlZCBsYSAqAggAMhAQLhiABBjHARgNGI4FGK8BMg0QLhiABBjHARgNGK8BMgcQABiABBgNMgkQABiABBgKGA0yExAuGIAEGMcBGJgFGJkFGA0YrwEyEBAuGIAEGMcBGA0YjgUYrwEyDRAuGIAEGMcBGA0YrwEyBxAuGIAEGA0yBxAAGIAEGA0yBxAAGIAEGA0yHxAuGIAEGMcBGA0YjgUYrwEYlwUY3AQY3gQY4ATYAQFIjjxQAFiuJHADeACQAQCYAYcBoAHOC6oBBDExLjW4AQPIAQD4AQGYAhOgAqUqqAIUwgIEECMYJ8ICChAjGIAEGCcYigXCAgUQLhiABMICCxAAGIAEGLEDGIMBwgIOEAAYgAQYsQMYgwEYigXCAggQABiABBixA8ICExAuGIAEGEMYxwEYigUYjgUYrwHCAgoQABiABBhDGIoFwgINECMY8AUYJxjJAhjqAsICBxAjGCcY6gLCAhAQABgDGLQCGOoCGI8B2AEBwgIQEC4YAxi0AhjqAhiPAdgBAcICERAuGIAEGLEDGNEDGIMBGMcBwgIOEC4YgAQYsQMY0QMYxwHCAggQLhiABBixA8ICBBAAGAPCAhEQLhiABBixAxiDARjUAhiKBcICBRAAGIAEwgILEC4YgAQYxwEYrwHCAgsQLhiABBixAxiDAcICDRAuGIAEGLEDGEMYigXCAhAQLhiABBixAxhDGIMBGIoFwgIOEC4YgAQYxwEYjgUYrwHCAg4QLhiABBixAxjHARivAcICGhAuGIAEGMcBGK8BGJcFGNwEGN4EGOAE2AEBwgIGEAAYFhgewgIFECEYoAHCAgYQABgNGB7CAggQABgFGA0YHpgDA_EFEECf6dX-6KW6BgYIARABGAqSBwwxMC43LjYtMS4wLjGgB8zOAQ&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=KV_l9Gy-hmMNMaw6nbldZYaK&daddr=Avda.+Principal,+s/n,+30509+La+Alcayna,+Murcia" target="_blank">
+                                <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -266,7 +316,7 @@
                     <div class="col-md-6 text-center text-md-right">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 mr-md-3">
                             <h4 class="mb-2">Barra libre</h4>
-                            <p class="text-uppercase mb-2">19:00</p>
+                            <p class="text-uppercase mb-2">19:00 PM</p>
                             <p class="m-0">Tendremos barra libre a partir de las 19:00 en El  portón de la Condesa.</p>
                         </div>
                     </div>
@@ -281,8 +331,8 @@
                     <div class="col-md-6 text-center text-md-left">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 ml-md-3">
                             <h4 class="mb-2">Resopón</h4>
-                            <p class="text-uppercase mb-2">15:00 horas</p>
-                            <p class="m-0">El banquete será en El  portón de la Condesa, La Alcayna, Murcia.</p>
+                            <p class="text-uppercase mb-2">15:00 PM</p>
+                            <p class="m-0">Tendremos resopón para que cojas fuerzas!</p>
                         </div>
                     </div>
                 </div>
@@ -290,8 +340,8 @@
                     <div class="col-md-6 text-center text-md-right">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 mr-md-3">
                             <h4 class="mb-2">Vuelta del Bus</h4>
-                            <p class="text-uppercase mb-2">19:00</p>
-                            <p class="m-0">Tendremos barra libre a partir de las 19:00 en El  portón de la Condesa.</p>
+                            <p class="text-uppercase mb-2">21:00 PM - 23:00 PM</p>
+                            <p class="m-0">El bus saldrá en dos horarios diferentes. </p>
                         </div>
                     </div>
                     <div class="col-md-6 text-center text-md-left">
@@ -305,8 +355,11 @@
                     <div class="col-md-6 text-center text-md-left">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 ml-md-3">
                             <h4 class="mb-2">Discoteca</h4>
-                            <p class="text-uppercase mb-2">15:00 horas</p>
-                            <p class="m-0">El banquete será en El  portón de la Condesa, La Alcayna, Murcia.</p>
+                            <p class="text-uppercase mb-2">00:00 PM</p>
+                            <p class="m-0">Sigue la fiesta en la discoteca Venus, en Guardamar.</p>
+                            <a href="https://www.google.com/maps?gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIICAEQABgWGB4yCggCEAAYgAQYogQyCggDEAAYgAQYogQyBwgEEAAY7wXSAQc1MTVqMGo3qAIAsAIA&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=Ke_bGJvlrWMNMeBiHLzYoO_8&daddr=Carrer+la+Redona,+56,+03140+Guardamar+del+Segura,+Alicante" target="_blank">
+                                <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -370,34 +423,44 @@
         <div class="container py-5">
             <div class="section-title position-relative text-center">
                 <h6 class="text-uppercase text-primary mb-3" style="letter-spacing: 3px;">Evento</h6>
-                <h1 class="font-secondary display-4">El evento</h1>
+                <h1 class="font-secondary display-4">Detalles del Evento</h1>
                 <i class="far fa-heart text-dark"></i>
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-6 text-center">
-                    <h5 class="font-weight-normal text-muted mb-3 pb-3">Clita ipsum aliquyam dolor diam dolores elitr nonumy. Rebum sea vero ipsum eirmod tempor kasd. Diam amet lorem erat eos sit lorem elitr justo</h5>
+                    <h5 class="font-weight-normal text-muted mb-3 pb-3">Acompáñanos en un día muy especial, lleno de amor y alegría. Aquí te contamos todo sobre los lugares y horarios importantes para que disfrutes del evento.
+                    </h5>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 border-right border-primary">
                     <div class="text-center text-md-right mr-md-3 mb-4 mb-md-0">
-                        <img class="img-fluid mb-4" src="img/event-1.jpg" alt="">
-                        <h4 class="mb-3">Parroquia de San Pedro Apóstol </h4>
+                        <img class="img-fluid mb-4" src="img/iglesia.jpg" alt="">
+                        <h4 class="mb-3">Parroquia de San Pedro Apóstol</h4>
                         <p class="mb-2">Pl. de la Iglesia, 0, 03170 Rojales, Alicante</p>
                         <p class="mb-0">12:00AM - 13:00PM</p>
+                        <!-- Enlace a Google Maps con ícono -->
+                        <a href="https://www.google.com/maps?sca_esv=c658d6c430e1c367&sxsrf=AHTn8zoCqwG9MAi6mhWvBXJy5rk8d96kHQ:1743356049493&fbs=ABzOT_BnMAgCWdhr5zilP5f1cnRvL69nV-ns4EEhuHi7aGOP-3vvyrhQpwNuPmWYea_clDmI_2RHewrlBZaZGvP4ZMQO_ykf8EvvX3dx_w3k-NvaO9aNqilN_wVYqhk7BdFNDUvYseYjm1ppU967TaY-4uoqfwBgNaoAqBHciFAiCGk8hGvK6uRDJOpwGydHafN4YwBxE6TPW4kzQxY5gGPIi3ZphTlXZg&biw=1920&bih=911&dpr=1&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=KbuYuEMar2MNMdRmLmVT9aDI&daddr=Pl.+de+la+Iglesia,+0,+03170+Rojales,+Alicante" target="_blank">
+                            <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="text-center text-md-left ml-md-3">
-                        <img class="img-fluid mb-4" src="img/event-2.jpg" alt="">
+                        <img class="img-fluid mb-4" src="img/porton.jpeg" alt="">
                         <h4 class="mb-3">El Portón de la Condesa</h4>
                         <p class="mb-2">Avda. Principal, s/n, 30509 La Alcayna, Murcia</p>
                         <p class="mb-0">15:00PM - 23:00PM</p>
+                        <!-- Enlace a Google Maps con ícono -->
+                        <a href="https://www.google.com/maps?sca_esv=c658d6c430e1c367&biw=1920&bih=911&sxsrf=AHTn8zqjIz4rU4Ncw-UP2ytrcL9indlT9w:1743356411679&gs_lp=Egxnd3Mtd2l6LXNlcnAiDXBvcnRvbiBlZCBsYSAqAggAMhAQLhiABBjHARgNGI4FGK8BMg0QLhiABBjHARgNGK8BMgcQABiABBgNMgkQABiABBgKGA0yExAuGIAEGMcBGJgFGJkFGA0YrwEyEBAuGIAEGMcBGA0YjgUYrwEyDRAuGIAEGMcBGA0YrwEyBxAuGIAEGA0yBxAAGIAEGA0yBxAAGIAEGA0yHxAuGIAEGMcBGA0YjgUYrwEYlwUY3AQY3gQY4ATYAQFIjjxQAFiuJHADeACQAQCYAYcBoAHOC6oBBDExLjW4AQPIAQD4AQGYAhOgAqUqqAIUwgIEECMYJ8ICChAjGIAEGCcYigXCAgUQLhiABMICCxAAGIAEGLEDGIMBwgIOEAAYgAQYsQMYgwEYigXCAggQABiABBixA8ICExAuGIAEGEMYxwEYigUYjgUYrwHCAgoQABiABBhDGIoFwgINECMY8AUYJxjJAhjqAsICBxAjGCcY6gLCAhAQABgDGLQCGOoCGI8B2AEBwgIQEC4YAxi0AhjqAhiPAdgBAcICERAuGIAEGLEDGNEDGIMBGMcBwgIOEC4YgAQYsQMY0QMYxwHCAggQLhiABBixA8ICBBAAGAPCAhEQLhiABBixAxiDARjUAhiKBcICBRAAGIAEwgILEC4YgAQYxwEYrwHCAgsQLhiABBixAxiDAcICDRAuGIAEGLEDGEMYigXCAhAQLhiABBixAxhDGIMBGIoFwgIOEC4YgAQYxwEYjgUYrwHCAg4QLhiABBixAxjHARivAcICGhAuGIAEGMcBGK8BGJcFGNwEGN4EGOAE2AEBwgIGEAAYFhgewgIFECEYoAHCAgYQABgNGB7CAggQABgFGA0YHpgDA_EFEECf6dX-6KW6BgYIARABGAqSBwwxMC43LjYtMS4wLjGgB8zOAQ&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=KV_l9Gy-hmMNMaw6nbldZYaK&daddr=Avda.+Principal,+s/n,+30509+La+Alcayna,+Murcia" target="_blank">
+                            <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <!-- Event End -->
 
 
