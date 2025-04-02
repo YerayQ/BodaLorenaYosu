@@ -373,7 +373,7 @@
     <div class="container-fluid bg-gallery" id="gallery" style="padding: 120px 0; margin: 90px 0;">
         <div class="section-title position-relative text-center" style="margin-bottom: 120px;">
             <h6 class="text-uppercase text-primary mb-3" style="letter-spacing: 3px;">Galería</h6>
-            <h1 class="font-secondary display-4 text-white">Nuestras fotosy</h1>
+            <h1 class="font-secondary display-4 text-white">Nuestras fotos</h1>
             <i class="far fa-heart text-white"></i>
         </div>
         <div class="owl-carousel gallery-carousel">
@@ -632,38 +632,47 @@
     </div>
     
     <script>
-        document.getElementById('guest-count').addEventListener('change', function () {
-            const guestContainer = document.getElementById('guest-names');
-            guestContainer.innerHTML = ''; // Limpiar los campos anteriores
-            let count = parseInt(this.value);
-            for (let i = 1; i <= count; i++) {
-                let div = document.createElement('div');
-                div.classList.add('form-group');
-                div.innerHTML = `
-                    <strong>Invitado ${i}:</strong>
-                    <input type="text" class="form-control bg-secondary border-0 py-2 px-3 mb-2 guest-name" id="guest-name-${i}" placeholder="Nombre del invitado ${i}" required/>
-                    <input type="text" class="form-control bg-secondary border-0 py-2 px-3 mb-2" placeholder="Dieta, alergias o intolerancias del invitado ${i}"/>
-                    <div class="form-check d-flex align-items-center">
-                        <input class="form-check-input mr-2" type="checkbox" id="children-check-${i}">
-                        <label class="form-check-label" for="children-check-${i}">Niño</label>
-                    </div>
-                    <div class="form-check d-flex align-items-center mt-2">
-                        <input class="form-check-input mr-2" type="checkbox" id="bus-check-${i}">
-                        <label class="form-check-label" for="bus-check-${i}">Utilizará el bus</label>
-                    </div>
-                `;
-                guestContainer.appendChild(div);
-            }
-            // Autocompletar el nombre del invitado 1 con el nombre principal
-            let mainNameInput = document.getElementById('main-name');
-            let firstGuestInput = document.getElementById('guest-name-1');
-            if (firstGuestInput) {
-                firstGuestInput.value = mainNameInput.value;
-                mainNameInput.addEventListener('input', function () {
-                    firstGuestInput.value = this.value;
-                });
-            }
+        document.getElementById('rsvp-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evita que la página recargue
+
+            let nombre = document.getElementById('main-name').value;
+            let numeroInvitados = document.getElementById('guest-count').value;
+            let nombresInvitados = [];
+            document.querySelectorAll('.guest-name').forEach(input => {
+                nombresInvitados.push(input.value);
+            });
+
+            let sugerenciaCancion = document.querySelectorAll('input[type="text"]')[1].value;
+            let actividad = document.querySelectorAll('input[type="text"]')[2].value;
+            let mensaje = document.querySelector('textarea').value;
+
+            let formData = {
+                nombre,
+                numeroInvitados,
+                nombresInvitados,
+                sugerenciaCancion,
+                actividad,
+                mensaje
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbyjvxU7dYePqSaNqDcNzuf2t2igkqDgzMdEkWPORyeZotIdl72BBUpD-OZYngIsyfW6Nw/exec", { // Reemplaza con la URL real de tu script en Google Apps Script
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("¡Formulario enviado con éxito!");
+                document.getElementById('rsvp-form').reset();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Hubo un error al enviar el formulario.");
+            });
         });
+
     </script>
     
     
