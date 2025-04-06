@@ -340,8 +340,12 @@
                     <div class="col-md-6 text-center text-md-right">
                         <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4 mr-md-3">
                             <h4 class="mb-2">Vuelta del Bus</h4>
-                            <p class="text-uppercase mb-2">21:00 PM - 23:00 PM</p>
-                            <p class="m-0">El bus saldrá en dos horarios diferentes. </p>
+                            <p class="text-uppercase mb-2">21:00 PM - 00:00 PM</p>
+                            <p class="m-0">El bus saldrá en dos horarios diferentes:</p>
+                            <p class="m-0">- Bus 1. De 21:00 PM a 22:00 PM aprox. </p>
+                            <p class="m-0">- Bus 2. De 23:00 PM a 00:00 PM aprox.</p>
+
+                            <p class="mt-2 small font-italic">* Al seleccionar un bus, tendrás preferencia en ese horario. Cambios a otro horario solo serán posibles si queda espacio disponible.</p>
                         </div>
                     </div>
                     <div class="col-md-6 text-center text-md-left">
@@ -578,104 +582,130 @@
     -->
     <!-- Friends & Family End -->
 
-
-    <!-- Form Start -->
-    <div class="container-fluid py-5" id="rsvp">
-        <div class="container py-5">
-            <div class="section-title position-relative text-center">
-                <h6 class="text-uppercase text-primary mb-3" style="letter-spacing: 3px;">Formulario</h6>
-                <h1 class="font-secondary display-4">Apúntate a nuestra fiesta!</h1>
-                <i class="far fa-heart text-dark"></i>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="text-center">
-                        <form id="rsvp-form">
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <input type="text" id="main-name" class="form-control bg-secondary border-0 py-4 px-3" placeholder="Nombre y apellido" required/>
-                                </div>
+<!-- Form Start -->
+<!-- Form Start -->
+<div class="container-fluid py-5" id="rsvp">
+    <div class="container py-5">
+        <div class="section-title position-relative text-center">
+            <h6 class="text-uppercase text-primary mb-3" style="letter-spacing: 3px;">Formulario</h6>
+            <h1 class="font-secondary display-4">Apúntate a nuestra fiesta!</h1>
+            <i class="far fa-heart text-dark"></i>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-left">
+                    <form id="rsvp-form">
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input type="text" id="main-name" class="form-control bg-secondary border-0 py-4 px-3" placeholder="Nombre y apellido" required/>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <select id="guest-count" class="form-control bg-secondary border-0" style="height: 52px;" required>
-                                        <option value="0">Número de invitados</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-                                </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <select id="guest-count" class="form-control bg-secondary border-0" style="height: 52px;" required>
+                                    <option value="0">Número de invitados</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
                             </div>
-                            <div id="guest-names"></div>
-                            <div class="form-group">
-                                <strong>Otros</strong>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control bg-secondary border-0 py-2 px-3" placeholder="Sugerencias de canciones"/>
-                            </div>
-                            
-                            <div class="form-group">
-                                <input type="text" class="form-control bg-secondary border-0 py-2 px-3" placeholder="Actividad que te gustaría realizar"/>
-                            </div>
-                            <div class="form-group">
-                                <textarea class="form-control bg-secondary border-0 py-2 px-3" rows="5" placeholder="Mensaje" required></textarea>
-                            </div>
-                            <div>
-                                <button class="btn btn-primary font-weight-bold py-3 px-5" type="submit">Enviar</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div id="guest-names"></div>
+                        <div class="form-group">
+                            <strong>Otros</strong>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control bg-secondary border-0 py-2 px-3" placeholder="Sugerencias de canciones"/>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea class="form-control bg-secondary border-0 py-2 px-3" rows="5" placeholder="Mensaje a los novios" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-primary font-weight-bold py-3 px-5" type="submit">Enviar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    
-    <script>
-        document.getElementById('rsvp-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // Evita que la página recargue
+</div>
 
-            let nombre = document.getElementById('main-name').value;
-            let numeroInvitados = document.getElementById('guest-count').value;
-            let nombresInvitados = [];
-            document.querySelectorAll('.guest-name').forEach(input => {
-                nombresInvitados.push(input.value);
+<script>
+    document.getElementById('guest-count').addEventListener('change', function () {
+        const guestContainer = document.getElementById('guest-names');
+        guestContainer.innerHTML = ''; // Limpiar los campos anteriores
+        let count = parseInt(this.value);
+        for (let i = 1; i <= count; i++) {
+            let div = document.createElement('div');
+            div.classList.add('form-group', 'text-left');
+            div.innerHTML = `
+                <strong>Invitado ${i}:</strong>
+                <input type="text" class="form-control bg-secondary border-0 py-2 px-3 mb-2 guest-name" id="guest-name-${i}" placeholder="Nombre del invitado ${i}" required/>
+                <input type="text" class="form-control bg-secondary border-0 py-2 px-3 mb-2" placeholder="Dieta, alergias o intolerancias del invitado ${i}"/>
+                <div class="form-check text-left">
+                    <input class="form-check-input" type="checkbox" id="children-check-${i}">
+                    <label class="form-check-label" for="children-check-${i}">Niño</label>
+                </div>
+                <div class="form-check text-left mt-2">
+                    <input class="form-check-input" type="checkbox" id="bus-check-${i}" onchange="toggleBusOptions(${i})">
+                    <label class="form-check-label" for="bus-check-${i}">Utilizará el bus</label>
+                </div>
+                <div id="bus-options-${i}" class="mt-2" style="display: none;">
+                    <div class="form-group text-left">
+                        <label><strong>Selecciona el bus de vuelta:</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="bus-return-${i}" id="bus1-${i}" value="bus1">
+                            <label class="form-check-label" for="bus1-${i}">
+                                Bus 1. Salida temprana (21:00h-22:00h)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="bus-return-${i}" id="bus2-${i}" value="bus2">
+                            <label class="form-check-label" for="bus2-${i}">
+                                Bus 2. Salida tardía (23:00h-00:00h)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="bus-return-${i}" id="bus3-${i}" value="bus3">
+                            <label class="form-check-label" for="bus3-${i}">
+                                No utilizará bus a la vuelta
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `;
+            guestContainer.appendChild(div);
+        }
+        // Autocompletar el nombre del invitado 1 con el nombre principal
+        let mainNameInput = document.getElementById('main-name');
+        let firstGuestInput = document.getElementById('guest-name-1');
+        if (firstGuestInput) {
+            firstGuestInput.value = mainNameInput.value;
+            mainNameInput.addEventListener('input', function () {
+                firstGuestInput.value = this.value;
             });
+        }
+    });
 
-            let sugerenciaCancion = document.querySelectorAll('input[type="text"]')[1].value;
-            let actividad = document.querySelectorAll('input[type="text"]')[2].value;
-            let mensaje = document.querySelector('textarea').value;
-
-            let formData = {
-                nombre,
-                numeroInvitados,
-                nombresInvitados,
-                sugerenciaCancion,
-                actividad,
-                mensaje
-            };
-
-            fetch("https://script.google.com/macros/s/AKfycbyjvxU7dYePqSaNqDcNzuf2t2igkqDgzMdEkWPORyeZotIdl72BBUpD-OZYngIsyfW6Nw/exec", { // Reemplaza con la URL real de tu script en Google Apps Script
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.text())
-            .then(data => {
-                alert("¡Formulario enviado con éxito!");
-                document.getElementById('rsvp-form').reset();
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("Hubo un error al enviar el formulario.");
+    // Función para mostrar/ocultar las opciones de bus cuando se marca/desmarca la casilla
+    function toggleBusOptions(guestIndex) {
+        const busCheck = document.getElementById(`bus-check-${guestIndex}`);
+        const busOptions = document.getElementById(`bus-options-${guestIndex}`);
+        
+        if (busCheck.checked) {
+            busOptions.style.display = 'block';
+        } else {
+            busOptions.style.display = 'none';
+            // Desmarcar las opciones de bus cuando se desmarca la casilla principal
+            const busRadios = document.getElementsByName(`bus-return-${guestIndex}`);
+            busRadios.forEach(radio => {
+                radio.checked = false;
             });
-        });
-
-    </script>
-    
-    
+        }
+    }
+</script>
     
     <!-- Formulario End -->
 
