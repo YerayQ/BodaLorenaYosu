@@ -1,0 +1,122 @@
+// Configuración para Google Apps Script
+function doGet(e) {
+  // Obtener los parámetros de la URL
+  var data = e.parameter.data;
+  var callback = e.parameter.callback;
+  
+  // Si no hay datos o callback, devolver un error
+  if (!data || !callback) {
+    return ContentService.createTextOutput(
+      'Error: Missing data or callback parameter'
+    ).setMimeType(ContentService.MimeType.TEXT);
+  }
+  
+  try {
+    // Analizar los datos JSON
+    var formData = JSON.parse(data);
+    
+    // Procesar los datos (guardar en la hoja de cálculo)
+    var result = processFormData(formData);
+    
+    // Crear la respuesta JSONP
+    var responseData = {
+      result: result.success ? 'success' : 'error',
+      message: result.message
+    };
+    
+    // Formatear la respuesta como una llamada de función JSONP
+    var jsonpResponse = callback + '(' + JSON.stringify(responseData) + ');';
+    
+    // Configurar la respuesta con el tipo MIME adecuado
+    return ContentService.createTextOutput(jsonpResponse)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+      
+  } catch (error) {
+    // En caso de error, devolver una respuesta JSONP con el error
+    var errorResponse = callback + '(' + JSON.stringify({
+      result: 'error',
+      message: 'Error processing request: ' + error.toString()
+    }) + ');';
+    
+    return ContentService.createTextOutput(errorResponse)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+}
+
+// Esta función también es necesaria para manejar solicitudes POST (aunque usaremos GET con JSONP)
+function doPost(e) {
+  // Para compatibilidad, redirigir a doGet si se recibe una solicitud POST
+  // Esto puede ser útil si decides cambiar a otro método en el futuro
+  return doGet(e);
+}
+
+// Función para procesar los datos del formulario y guardarlos en la hoja de cálculo
+function processFormData(formData) {
+  try {
+    var SPREADSHEET_ID = '1etmIo2-RBlCvzeC8Ml-sXpL20X6F5dPwtxFjr_OL-ZY';
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+    // Hoja 1: Resumen general (igual que antes)
+    var sheetResponses = ss.getSheetByName('Respuestas');
+    if (!sheetResponses) {
+      sheetResponses = ss.insertSheet('Respuestas');
+      sheetResponses.appendRow([
+        'Fecha', 
+        'Número de Invitados', 
+        'Sugerencias de Canciones', 
+        'Mensaje'
+      ]);
+    }
+
+    sheetResponses.appendRow([
+      formData.fechaEnvio,
+      formData.numeroInvitados,
+      formData.sugerenciasCanciones,
+      formData.mensaje
+    ]);
+
+    // Hoja 2: Detalle por invitado (extendida)
+    var sheetGuests = ss.getSheetByName('Invitados');
+    if (!sheetGuests) {
+      sheetGuests = ss.insertSheet('Invitados');
+      sheetGuests.appendRow([
+        'Fecha de Envío',
+        'Número de Invitado', 
+        'Nombre', 
+        'Alergias', 
+        'Niño', 
+        'Usa Bus', 
+        'Opción Bus',
+        'Sugerencias de Canciones',
+        'Mensaje'
+      ]);
+    }
+
+    for (var i = 0; i < formData.invitados.length; i++) {
+      var guest = formData.invitados[i];
+      sheetGuests.appendRow([
+        formData.fechaEnvio,
+        guest.invitado,
+        guest.nombre,
+        guest.alergias,
+        guest.nino,
+        guest.usaBus,
+        guest.opcionBus,
+        i === 0 ? formData.sugerenciasCanciones : '',  // Solo para el invitado 1
+        i === 0 ? formData.mensaje : ''                // Solo para el invitado 1
+      ]);
+    }
+
+    return {
+      success: true,
+      message: 'Data saved successfully'
+    };
+
+  } catch (error) {
+    console.error('Error saving data: ' + error.toString());
+    return {
+      success: false,
+      message: 'Error saving data: ' + error.toString()
+    };
+  }
+}

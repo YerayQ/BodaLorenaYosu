@@ -585,12 +585,28 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <div class="text-left">
-                    <form id="rsvp-form">
+                <!-- Mensaje de confirmación (oculto inicialmente) -->
+                <div id="form-success" class="alert alert-success" style="display: none;">
+                    ¡Gracias! Tu respuesta ha sido enviada correctamente.
+                </div>
+                
+                <!-- Mensaje de error (oculto inicialmente) -->
+                <div id="form-error" class="alert alert-danger" style="display: none;">
+                    Ha ocurrido un error al enviar el formulario. Por favor, inténtalo de nuevo.
+                </div>
+                
+                <div class="text-left" id="form-container">
+                    <!-- Usamos formsubmit.co como alternativa más sencilla -->
+                    <form action="https://formsubmit.co/ajax/yerayquiles16@gmail.com" method="POST" id="rsvp-form">
+                        <!-- Campos ocultos para FormSubmit -->
+                        <input type="hidden" name="_subject" value="Nueva respuesta del formulario de evento">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        
                         <div class="form-row">
                             <div class="form-group col-12">
-                                <select id="guest-count" class="form-control bg-secondary border-0" style="height: 52px;" required>
-                                    <option value="0">Número de invitados</option>
+                                <select id="guest-count" name="numero_invitados" class="form-control bg-secondary border-0" style="height: 52px;" required onchange="generateGuestFields()">
+                                    <option value="">Número de invitados</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -598,21 +614,27 @@
                                 </select>
                             </div>
                         </div>
-                        <div id="guest-names"></div>
+                        
+                        <div id="guest-fields-container"></div>
+                        
                         <div class="form-group">
                             <strong>Otros</strong>
                         </div>
                         <div class="form-group">
-                            <input type="text" id="song-suggestions" class="form-control bg-secondary border-0 py-2 px-3" placeholder="Sugerencias de canciones"/>
+                            <input type="text" name="sugerencias_canciones" class="form-control bg-secondary border-0 py-2 px-3" placeholder="Sugerencias de canciones"/>
                         </div>
                         <div class="form-group">
-                            <textarea id="message" class="form-control bg-secondary border-0 py-2 px-3" rows="5" placeholder="Mensaje a los novios" required></textarea>
+                            <textarea name="mensaje" class="form-control bg-secondary border-0 py-2 px-3" rows="5" placeholder="Mensaje a los novios" required></textarea>
                         </div>
                         <div class="text-center">
-                            <button class="btn btn-primary font-weight-bold py-3 px-5" type="submit" id="submit-button">Enviar</button>
-                            <div class="loader" id="submit-loader"></div>
-                            <div class="success-message" id="success-message">¡Gracias! Tu respuesta ha sido enviada correctamente.</div>
-                            <div class="error-message" id="error-message">Ha ocurrido un error. Por favor intenta nuevamente.</div>
+                            <button class="btn btn-primary font-weight-bold py-3 px-5" type="submit" id="submit-btn">
+                                Enviar
+                            </button>
+                            <!-- Indicador de carga (oculto inicialmente) -->
+                            <div id="loading-indicator" style="display: none;">
+                                <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+                                Enviando...
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -622,54 +644,61 @@
 </div>
 
 <script>
-    document.getElementById('guest-count').addEventListener('change', function () {
-        const guestContainer = document.getElementById('guest-names');
-        guestContainer.innerHTML = ''; // Limpiar los campos anteriores
-        let count = parseInt(this.value);
-        for (let i = 1; i <= count; i++) {
-            let div = document.createElement('div');
-            div.classList.add('form-group', 'text-left');
-            div.innerHTML = `
-                <strong>Invitado ${i}:</strong>
-                <input type="text" class="form-control bg-secondary border-0 py-2 px-3 mb-2 guest-name" id="guest-name-${i}" placeholder="Nombre y apellido" required/>
-                <input type="text" class="form-control bg-secondary border-0 py-2 px-3 mb-2" id="allergies-${i}" placeholder="Alergias o intolerancias"/>
-                <div class="form-check text-left">
-                    <input class="form-check-input" type="checkbox" id="children-check-${i}">
-                    <label class="form-check-label" for="children-check-${i}">Niño</label>
+    function generateGuestFields() {
+        const guestCount = parseInt(document.getElementById('guest-count').value);
+        const container = document.getElementById('guest-fields-container');
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= guestCount; i++) {
+            const guestDiv = document.createElement('div');
+            guestDiv.className = 'guest-container';
+            guestDiv.innerHTML = `
+                <h5>Invitado ${i}</h5>
+                <div class="form-group">
+                    <label for="guest-name-${i}">Nombre y apellido:</label>
+                    <input type="text" id="guest-name-${i}" name="invitado_${i}_nombre" class="form-control bg-secondary border-0 py-2 px-3" required>
                 </div>
-                <div class="form-check text-left mt-2">
-                    <input class="form-check-input" type="checkbox" id="bus-check-${i}" onchange="toggleBusOptions(${i})">
-                    <label class="form-check-label" for="bus-check-${i}">Utilizará el bus</label>
+                <div class="form-group">
+                    <label for="guest-allergies-${i}">Alergias o intolerancias:</label>
+                    <input type="text" id="guest-allergies-${i}" name="invitado_${i}_alergias" class="form-control bg-secondary border-0 py-2 px-3">
                 </div>
-                <div id="bus-options-${i}" class="mt-2" style="display: none;">
-                    <div class="form-group text-left">
-                        <label><strong>Selecciona tu uso del bus:</strong></label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="bus-return-${i}" id="bus1-${i}" value="Ida y vuelta">
-                            <label class="form-check-label" for="bus1-${i}">
-                                Ida y vuelta
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="bus-return-${i}" id="bus2-${i}" value="Solo ida">
-                            <label class="form-check-label" for="bus2-${i}">
-                                Solo ida
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="bus-return-${i}" id="bus3-${i}" value="Solo vuelta">
-                            <label class="form-check-label" for="bus3-${i}">
-                                Solo vuelta
-                            </label>
-                        </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="children-check-${i}" name="invitado_${i}_nino" value="Sí">
+                    <label class="form-check-label" for="children-check-${i}">
+                        Niño
+                    </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="bus-check-${i}" name="invitado_${i}_usa_bus" value="Sí" onchange="toggleBusOptions(${i})">
+                    <label class="form-check-label" for="bus-check-${i}">
+                        Utilizará el bus
+                    </label>
+                </div>
+                <div id="bus-options-${i}" style="display: none; margin-left: 20px; margin-bottom: 15px;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="invitado_${i}_opcion_bus" id="bus1-${i}" value="Ida y vuelta">
+                        <label class="form-check-label" for="bus1-${i}">
+                            Ida y vuelta
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="invitado_${i}_opcion_bus" id="bus2-${i}" value="Solo ida">
+                        <label class="form-check-label" for="bus2-${i}">
+                            Solo ida
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="invitado_${i}_opcion_bus" id="bus3-${i}" value="Solo vuelta">
+                        <label class="form-check-label" for="bus3-${i}">
+                            Solo vuelta
+                        </label>
                     </div>
                 </div>
             `;
-            guestContainer.appendChild(div);
+            container.appendChild(guestDiv);
         }
-    });
+    }
 
-    // Función para mostrar/ocultar las opciones de bus cuando se marca/desmarca la casilla
     function toggleBusOptions(guestIndex) {
         const busCheck = document.getElementById(`bus-check-${guestIndex}`);
         const busOptions = document.getElementById(`bus-options-${guestIndex}`);
@@ -679,133 +708,58 @@
         } else {
             busOptions.style.display = 'none';
             // Desmarcar las opciones de bus cuando se desmarca la casilla principal
-            const busRadios = document.getElementsByName(`bus-return-${guestIndex}`);
+            const busRadios = document.getElementsByName(`invitado_${guestIndex}_opcion_bus`);
             busRadios.forEach(radio => {
                 radio.checked = false;
             });
         }
     }
 
-    // Manejar el envío del formulario
-    document.getElementById('rsvp-form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    // Agregar el controlador de eventos para enviar el formulario con AJAX
+    document.getElementById('rsvp-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir el envío tradicional del formulario
         
-        // Verificar que se haya seleccionado al menos 1 invitado
-        const guestCount = parseInt(document.getElementById('guest-count').value);
-        if (guestCount === 0) {
-            alert('Por favor, selecciona el número de invitados');
-            return;
-        }
+        // Mostrar indicador de carga y ocultar botón
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('loading-indicator').style.display = 'inline-block';
         
-        // Deshabilitar el botón de envío y mostrar el loader
-        const submitButton = document.getElementById('submit-button');
-        submitButton.disabled = true;
+        // Obtener todos los datos del formulario
+        const formData = new FormData(this);
         
-        // Mostrar el loader y ocultar mensajes previos
-        document.getElementById('submit-loader').classList.add('visible');
-        document.getElementById('success-message').classList.remove('visible');
-        document.getElementById('error-message').classList.remove('visible');
+        // Convertir FormData a JSON
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
         
-        // Recopilar los datos del formulario
-        const songSuggestions = document.getElementById('song-suggestions').value;
-        const message = document.getElementById('message').value;
-        
-        // Crear un array para almacenar los datos de los invitados
-        const guestData = [];
-        
-        for (let i = 1; i <= guestCount; i++) {
-            const guestName = document.getElementById(`guest-name-${i}`).value;
-            const allergies = document.getElementById(`allergies-${i}`).value;
-            const isChild = document.getElementById(`children-check-${i}`).checked;
-            const usesBus = document.getElementById(`bus-check-${i}`).checked;
-            
-            let busOption = '';
-            if (usesBus) {
-                const busRadios = document.getElementsByName(`bus-return-${i}`);
-                busRadios.forEach(radio => {
-                    if (radio.checked) {
-                        busOption = radio.value;
-                    }
-                });
-            }
-            
-            guestData.push({
-                invitado: i,
-                nombre: guestName,
-                alergias: allergies,
-                nino: isChild ? 'Sí' : 'No',
-                usaBus: usesBus ? 'Sí' : 'No',
-                opcionBus: busOption
-            });
-        }
-        
-        // Preparar los datos para enviar a Google Sheets
-        const formData = {
-            numeroInvitados: guestCount,
-            invitados: guestData,
-            sugerenciasCanciones: songSuggestions,
-            mensaje: message,
-            fechaEnvio: new Date().toLocaleString()
-        };
-        
-        // URL del script de Google Apps Script
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxo1-VtBJlR-hVqJ7TwvCYvW3vAp0O4DnCMq5uCca0yT3YtrTPG9SC0A8k9M1vYB_BwFQ/exec';
-        
-        // Método 1: Usar JSONP (no require CORS)
-        // Crear un elemento de script para hacer la solicitud JSONP
-        const scriptElement = document.createElement('script');
-        
-        // Crear un nombre único para la función de callback
-        const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 9);
-        
-        // Definir la función de callback en el objeto window
-        window[callbackName] = function(response) {
-            // Ocultar el loader
-            document.getElementById('submit-loader').classList.remove('visible');
-            
-            if (response && response.result === 'success') {
+        // Enviar los datos mediante AJAX usando Fetch API
+        fetch('https://formsubmit.co/ajax/yerayquiles16@gmail.com', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success === 'true' || data.success === true) {
                 // Mostrar mensaje de éxito
-                document.getElementById('success-message').classList.add('visible');
-                // Limpiar el formulario
-                document.getElementById('rsvp-form').reset();
-                document.getElementById('guest-names').innerHTML = '';
+                document.getElementById('form-container').style.display = 'none';
+                document.getElementById('form-success').style.display = 'block';
+                
+                // Opcional: desplazarse hacia arriba para mostrar el mensaje
+                document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth' });
             } else {
-                // Mostrar mensaje de error
-                document.getElementById('error-message').classList.add('visible');
+                throw new Error('Error en la respuesta del servidor');
             }
-            
-            // Habilitar el botón de envío
-            submitButton.disabled = false;
-            
-            // Eliminar la función de callback y el elemento de script
-            delete window[callbackName];
-            document.body.removeChild(scriptElement);
-        };
-        
-        // Configurar un tiempo de espera en caso de que la respuesta no llegue
-        const timeoutId = setTimeout(function() {
-            // Si no recibimos respuesta en 10 segundos, considerarlo un error
-            if (window[callbackName]) {
-                window[callbackName]({ result: 'error', message: 'Timeout' });
-            }
-        }, 10000);
-        
-        // Configurar la URL con los datos y el callback
-        const jsonString = encodeURIComponent(JSON.stringify(formData));
-        scriptElement.src = `${scriptURL}?data=${jsonString}&callback=${callbackName}`;
-        
-        // Manejar errores de carga del script
-        scriptElement.onerror = function() {
-            clearTimeout(timeoutId);
-            document.getElementById('submit-loader').classList.remove('visible');
-            document.getElementById('error-message').classList.add('visible');
-            submitButton.disabled = false;
-            delete window[callbackName];
-            document.body.removeChild(scriptElement);
-        };
-        
-        // Agregar el script al DOM para iniciar la solicitud
-        document.body.appendChild(scriptElement);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('form-error').style.display = 'block';
+            document.getElementById('submit-btn').style.display = 'inline-block';
+            document.getElementById('loading-indicator').style.display = 'none';
+        });
     });
 </script>
     
